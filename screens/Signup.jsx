@@ -8,7 +8,7 @@ import UserInput from "../components/auth/UserInput";
 import SubmitButton from "../components/auth/SubmitButton";
 import CircleLogo from "../components/auth/CircleLogo";
 
-const Signup = () => {
+const Signup = ({ navigation }) => {
   const [name, setName] = useState("Ryan");
   const [email, setEmail] = useState("ryan@gmail.com");
   const [password, setPassword] = useState("rrrrrr");
@@ -79,7 +79,10 @@ const Signup = () => {
         />
 
         <Text small center>
-          Already Joined? <Text color="#ff2222">Sign In</Text>
+          Already Joined?{" "}
+          <Text onPress={() => navigation.navigate("Signin")} color="#ff2222">
+            Sign In
+          </Text>
         </Text>
       </View>
     </KeyboardAwareScrollView>

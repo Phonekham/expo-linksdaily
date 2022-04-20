@@ -8,7 +8,7 @@ import CircleLogo from "../components/auth/CircleLogo";
 import UserInput from "../components/auth/UserInput";
 import SubmitButton from "../components/auth/SubmitButton";
 
-const Signin = () => {
+const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("ryan@gmail.com");
   const [password, setPassword] = useState("rrrrrr");
   const [loading, setLoading] = useState(false);
@@ -71,7 +71,10 @@ const Signin = () => {
         />
 
         <Text small center>
-          Not yet registered? <Text color="#ff2222">Sign Up</Text>
+          Not yet registered?{" "}
+          <Text onPress={() => navigation.navigate("Signup")} color="#ff2222">
+            Sign Up
+          </Text>
         </Text>
 
         <Text small center color="orange" style={{ marginTop: 10 }}>
