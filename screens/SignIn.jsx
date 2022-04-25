@@ -1,19 +1,21 @@
-import React, { useState } from "react";
-import { View } from "react-native";
-import Text from "@kaloraat/react-native-text";
+import React, { useState, useContext } from "react";
+import { View, ScrollView } from "react-native";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Text from "@kaloraat/react-native-text";
 
-import CircleLogo from "../components/auth/CircleLogo";
 import UserInput from "../components/auth/UserInput";
 import SubmitButton from "../components/auth/SubmitButton";
-import { API } from "../config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import CircleLogo from "../components/auth/CircleLogo";
+import { AuthContext } from "../context/auth";
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("ryan@gmail.com");
   const [password, setPassword] = useState("rrrrrr");
   const [loading, setLoading] = useState(false);
+  // context
+  const [state, setState] = useContext(AuthContext);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -24,7 +26,7 @@ const Signin = ({ navigation }) => {
     }
     // console.log("SIGNINREQUEST => ", name, email, password);
     try {
-      const { data } = await axios.post(`${API}/signin`, {
+      const { data } = await axios.post(`/signin`, {
         email,
         password,
       });
@@ -32,22 +34,23 @@ const Signin = ({ navigation }) => {
         alert(data.error);
         setLoading(false);
       } else {
+        // save in context
+        setState(data);
+        // save response in async storage
         await AsyncStorage.setItem("@auth", JSON.stringify(data));
         setLoading(false);
         console.log("SIGN IN SUCCESS => ", data);
         alert("Sign in successful");
+        // redirect
+        navigation.navigate("Home");
       }
     } catch (err) {
+      alert("Signup failed. Try again.");
       console.log(err);
       setLoading(false);
     }
   };
 
-  const loadFromAsyncStorage = async () => {
-    let data = await AsyncStorage.getItem("@auth");
-    console.log(data);
-  };
-  loadFromAsyncStorage();
   return (
     <KeyboardAwareScrollView
       contentCotainerStyle={{
