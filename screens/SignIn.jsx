@@ -7,6 +7,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import CircleLogo from "../components/auth/CircleLogo";
 import UserInput from "../components/auth/UserInput";
 import SubmitButton from "../components/auth/SubmitButton";
+import { API } from "../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState("ryan@gmail.com");
@@ -15,27 +17,37 @@ const Signin = ({ navigation }) => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (!name || !email || !password) {
+    if (!email || !password) {
       alert("All fields are required");
       setLoading(false);
       return;
     }
     // console.log("SIGNINREQUEST => ", name, email, password);
     try {
-      const { data } = await axios.post("http://localhost:8000/api/signin", {
-        name,
+      const { data } = await axios.post(`${API}/signin`, {
         email,
         password,
       });
-      setLoading(false);
-      console.log("SIGN IN SUCCESS => ", data);
-      alert("Sign in successful");
+      if (data.error) {
+        alert(data.error);
+        setLoading(false);
+      } else {
+        await AsyncStorage.setItem("@auth", JSON.stringify(data));
+        setLoading(false);
+        console.log("SIGN IN SUCCESS => ", data);
+        alert("Sign in successful");
+      }
     } catch (err) {
       console.log(err);
       setLoading(false);
     }
   };
 
+  const loadFromAsyncStorage = async () => {
+    let data = await AsyncStorage.getItem("@auth");
+    console.log(data);
+  };
+  loadFromAsyncStorage();
   return (
     <KeyboardAwareScrollView
       contentCotainerStyle={{
@@ -65,7 +77,7 @@ const Signin = ({ navigation }) => {
         />
 
         <SubmitButton
-          title="Sign Up"
+          title="Sign In"
           handleSubmit={handleSubmit}
           loading={loading}
         />
