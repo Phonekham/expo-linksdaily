@@ -9,6 +9,7 @@ import SubmitButton from "../components/auth/SubmitButton";
 import UserInput from "../components/auth/UserInput";
 import CircleLogo from "../components/auth/CircleLogo";
 import { AuthContext } from "../context/auth";
+import { API } from "../config";
 
 const Signup = ({ navigation }) => {
   const [name, setName] = useState("Ryan");
@@ -29,7 +30,7 @@ const Signup = ({ navigation }) => {
     }
     // console.log("SIGNUP REQUEST => ", name, email, password);
     try {
-      const { data } = await axios.post(`/signup`, {
+      const { data } = await axios.post(`${API}/signup`, {
         name,
         email,
         password,
